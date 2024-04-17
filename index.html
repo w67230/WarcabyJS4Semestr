@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <table>
+        <tr>
+            <th>0</th>
+            <td id="f00"></td>
+            <td id="f01"></td>
+            <td id="f02"></td>
+            <td id="f03"></td>
+            <td id="f04"></td>
+            <td id="f05"></td>
+            <td id="f06"></td>
+            <td id="f07"></td>
+        </tr>
+        <tr>
+            <th>1</th>
+            <td id="f10"></td>
+            <td id="f11"></td>
+            <td id="f12"></td>
+            <td id="f13"></td>
+            <td id="f14"></td>
+            <td id="f15"></td>
+            <td id="f16"></td>
+            <td id="f17"></td>
+        </tr>
+        <tr>
+            <th>2</th>
+            <td id="f20"></td>
+            <td id="f21"></td>
+            <td id="f22"></td>
+            <td id="f23"></td>
+            <td id="f24"></td>
+            <td id="f25"></td>
+            <td id="f26"></td>
+            <td id="f27"></td>
+        </tr>
+        <tr>
+            <th>3</th>
+            <td id="f30"></td>
+            <td id="f31"></td>
+            <td id="f32"></td>
+            <td id="f33"></td>
+            <td id="f34"></td>
+            <td id="f35"></td>
+            <td id="f36"></td>
+            <td id="f37"></td>
+        </tr>
+        <tr>
+            <th>4</th>
+            <td id="f40"></td>
+            <td id="f41"></td>
+            <td id="f42"></td>
+            <td id="f43"></td>
+            <td id="f44"></td>
+            <td id="f45"></td>
+            <td id="f46"></td>
+            <td id="f47"></td>
+        </tr>
+        <tr>
+            <th>5</th>
+            <td id="f50"></td>
+            <td id="f51"></td>
+            <td id="f52"></td>
+            <td id="f53"></td>
+            <td id="f54"></td>
+            <td id="f55"></td>
+            <td id="f56"></td>
+            <td id="f57"></td>
+        </tr>
+        <tr>
+            <th>6</th>
+            <td id="f60"></td>
+            <td id="f61"></td>
+            <td id="f62"></td>
+            <td id="f63"></td>
+            <td id="f64"></td>
+            <td id="f65"></td>
+            <td id="f66"></td>
+            <td id="f67"></td>
+        </tr>
+        <tr>
+            <th>7</th>
+            <td id="f70"></td>
+            <td id="f71"></td>
+            <td id="f72"></td>
+            <td id="f73"></td>
+            <td id="f74"></td>
+            <td id="f75"></td>
+            <td id="f76"></td>
+            <td id="f77"></td>
+        </tr>
+        <tr>
+            <th>-</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+        </tr>
+    </table>
+
+    <script>
+        var d = document;
+
+        var funForEvents = function(){
+
+        }
+
+        class Field {
+            #tdField;
+            #figure;
+            #whiteField;
+
+            constructor(tdField, figure, whiteField){
+                this.#tdField = tdField;
+                this.#figure = figure;
+                this.#whiteField = whiteField;
+            }
+
+            getTdField(){
+                return this.#tdField;
+            }
+
+            setTdField(tdField){
+                this.#tdField = tdField;
+            }
+
+            getFigura(){
+                return this.#figure
+            }
+
+            setFigura(figure){
+                if(!this.#whiteField){
+                    this.#figure = figure;
+                }
+            }
+
+            isWhiteField(){
+                return this.#whiteField;
+            }
+        }
+
+        class Figure {
+            x;
+            y;
+            red;
+
+            static currentlySelectedFigure = null;
+
+            constructor(y, x, red){
+                this.x = x;
+                this.y = y;
+                this.red = red;
+            }
+
+            isOnEndOfBoard(){
+                return this.red ? this.y > 6 : this.y < 1;
+            }
+
+            isOnLeftEdge(){
+                return this.x < 1;
+            }
+
+            isOnRightEdge(){
+                return this.x > 6;
+            }
+
+            checkMoves(){
+                var self = this;
+                var leftMove = this.getLeftField();
+                var rightMove = this.getRightField();
+                if(leftMove != null){
+                    if(leftMove.getFigura() == null){
+                        leftMove.getTdField().addEventListener("click", () => {
+                            self.move(true, leftMove);
+                        });
+                    }
+                    else {
+                        // bicie
+                    }
+                }
+
+                if(rightMove != null){
+                    if(rightMove.getFigura() == null){
+                        rightMove.getTdField().addEventListener("click", () => {
+                            self.move(false, rightMove);
+                        });
+                    }
+                    else {
+                        // bicie
+                    }
+                }
+            }
+
+            move(left, field){
+                this.getCurrentField().setFigura(null);
+                this.x = left ? this.x-1 : this.x+1;
+                this.y = this.red ? this.y+1 : this.y-1;
+                field.setFigura(this);
+                removeMoves();
+                addMoves();
+                draw();
+            }
+
+            getLeftField(){
+                if(!this.isOnEndOfBoard()){
+                    if(!this.isOnLeftEdge()){
+                        var yAddition = this.red ? 1 : -1;
+                        return BOARD[this.y+yAddition][this.x-1];
+                    }
+                }
+                return null;
+            }
+
+            getRightField(){
+                if(!this.isOnEndOfBoard()){
+                    if(!this.isOnRightEdge()){
+                        var yAddition = this.red ? 1 : -1;
+                        return BOARD[this.y+yAddition][this.x+1];
+                    }
+                }
+                return null;
+            }
+
+            getCurrentField(){
+                return BOARD[this.y][this.x];
+            }
+
+        }
+
+
+        const BOARD = [
+            [
+                new Field(d.querySelector("#f00"), new Figure(0, 0, true), false), 
+                new Field(d.querySelector("#f01"), null, true), 
+                new Field(d.querySelector("#f02"), new Figure(0, 2, true), false), 
+                new Field(d.querySelector("#f03"), null, true), 
+                new Field(d.querySelector("#f04"), new Figure(0, 4, true), false), 
+                new Field(d.querySelector("#f05"), null, true), 
+                new Field(d.querySelector("#f06"), new Figure(0, 6, true), false), 
+                new Field(d.querySelector("#f07"), null, true)
+            ],
+            [
+                new Field(d.querySelector("#f10"), null, true), 
+                new Field(d.querySelector("#f11"), new Figure(1, 1, true), false), 
+                new Field(d.querySelector("#f12"), null, true), 
+                new Field(d.querySelector("#f13"), new Figure(1, 3, true), false), 
+                new Field(d.querySelector("#f14"), null, true), 
+                new Field(d.querySelector("#f15"), new Figure(1, 5, true), false), 
+                new Field(d.querySelector("#f16"), null, true), 
+                new Field(d.querySelector("#f17"), new Figure(1, 7, true), false)
+            ],
+            [
+                new Field(d.querySelector("#f20"), null, false), 
+                new Field(d.querySelector("#f21"), null, true), 
+                new Field(d.querySelector("#f22"), null, false), 
+                new Field(d.querySelector("#f23"), null, true), 
+                new Field(d.querySelector("#f24"), null, false), 
+                new Field(d.querySelector("#f25"), null, true), 
+                new Field(d.querySelector("#f26"), null, false), 
+                new Field(d.querySelector("#f27"), null, true)
+            ],
+            [
+                new Field(d.querySelector("#f30"), null, true), 
+                new Field(d.querySelector("#f31"), null, false), 
+                new Field(d.querySelector("#f32"), null, true), 
+                new Field(d.querySelector("#f33"), null, false), 
+                new Field(d.querySelector("#f34"), null, true), 
+                new Field(d.querySelector("#f35"), null, false), 
+                new Field(d.querySelector("#f36"), null, true), 
+                new Field(d.querySelector("#f37"), null, false)
+            ],
+            [
+                new Field(d.querySelector("#f40"), null, false), 
+                new Field(d.querySelector("#f41"), null, true), 
+                new Field(d.querySelector("#f42"), null, false), 
+                new Field(d.querySelector("#f43"), null, true), 
+                new Field(d.querySelector("#f44"), null, false), 
+                new Field(d.querySelector("#f45"), null, true), 
+                new Field(d.querySelector("#f46"), null, false), 
+                new Field(d.querySelector("#f47"), null, true)
+            ],
+            [
+                new Field(d.querySelector("#f50"), null, true), 
+                new Field(d.querySelector("#f51"), null, false), 
+                new Field(d.querySelector("#f52"), null, true), 
+                new Field(d.querySelector("#f53"), null, false), 
+                new Field(d.querySelector("#f54"), null, true), 
+                new Field(d.querySelector("#f55"), null, false), 
+                new Field(d.querySelector("#f56"), null, true), 
+                new Field(d.querySelector("#f57"), null, false)
+            ],
+            [
+                new Field(d.querySelector("#f60"), new Figure(6, 0, false), false), 
+                new Field(d.querySelector("#f61"), null, true), 
+                new Field(d.querySelector("#f62"), new Figure(6, 2, false), false), 
+                new Field(d.querySelector("#f63"), null, true), 
+                new Field(d.querySelector("#f64"), new Figure(6, 4, false), false), 
+                new Field(d.querySelector("#f65"), null, true), 
+                new Field(d.querySelector("#f66"), new Figure(6, 6, false), false), 
+                new Field(d.querySelector("#f67"), null, true)
+            ],
+            [
+                new Field(d.querySelector("#f70"), null, true), 
+                new Field(d.querySelector("#f71"), new Figure(7, 1, false), false), 
+                new Field(d.querySelector("#f72"), null, true), 
+                new Field(d.querySelector("#f73"), new Figure(7, 3, false), false), 
+                new Field(d.querySelector("#f74"), null, true), 
+                new Field(d.querySelector("#f75"), new Figure(7, 5, false), false), 
+                new Field(d.querySelector("#f76"), null, true), 
+                new Field(d.querySelector("#f77"), new Figure(7, 7, false), false)
+            ]
+        ];
+
+
+        function addMoves(){
+            BOARD.forEach(arrays => {
+                arrays.forEach(field => {
+                    if(field.getFigura() != null){
+                        //if(!field.getFigura().red){
+                            field.getTdField().addEventListener("click", () => {
+                                removeMoves();
+                                field.getTdField().addEventListener("click", () => {
+                                    removeMoves();
+                                    addMoves();
+                                });
+
+                                field.getFigura().checkMoves();
+                            });
+                        //}
+                    }
+                });
+            });
+        }
+
+        function removeMoves(){
+            BOARD.forEach(arrays => {
+                arrays.forEach(field => {
+                    var identifier = field.getTdField().id;
+                    field.getTdField().replaceWith(field.getTdField().cloneNode(true));
+                    field.setTdField(d.querySelector("#"+identifier));
+                });
+            });
+        }
+
+        function draw(){
+            BOARD.forEach(arrays => {
+                arrays.forEach(field => {
+                    if(field.isWhiteField()){
+                        field.getTdField().style.backgroundColor="white";
+                    }
+                    else if(field.getFigura() != null){
+                        if(field.getFigura().red){
+                            field.getTdField().style.backgroundColor="red";
+                        }
+                        else {
+                            field.getTdField().style.backgroundColor="blue";
+                        }
+                    }
+                    else {
+                        field.getTdField().style.backgroundColor="black";
+                    }
+                });
+            });
+        }
+
+        draw();
+        addMoves();
+    </script>
+</body>
+</html>
