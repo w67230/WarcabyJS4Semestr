@@ -112,10 +112,6 @@
     <script>
         var d = document;
 
-        var funForEvents = function(){
-
-        }
-
         class Field {
             #tdField;
             #figure;
@@ -155,8 +151,6 @@
             y;
             red;
 
-            static currentlySelectedFigure = null;
-
             constructor(y, x, red){
                 this.x = x;
                 this.y = y;
@@ -188,6 +182,7 @@
                         leftMove.getTdField().addEventListener("click", () => {
                             self.move(true, leftMove);
                         });
+                        drawMoveBorder(leftMove);
                     }
                     else {
                         var leftKillField = this.red ? leftMove.getFigura().getBottomField(true) : leftMove.getFigura().getTopField(true);
@@ -196,6 +191,7 @@
                                 leftKillField.getTdField().addEventListener("click", () => {
                                     self.kill(leftMove, true, leftKillField);
                                 });
+                                drawMoveBorder(leftKillField);
                             }
                         }
                     }
@@ -206,6 +202,7 @@
                         rightMove.getTdField().addEventListener("click", () => {
                             self.move(false, rightMove);
                         });
+                        drawMoveBorder(rightMove);
                     }
                     else {
                         var rightKillField = this.red ? rightMove.getFigura().getBottomField(false) : rightMove.getFigura().getTopField(false);
@@ -214,6 +211,7 @@
                                 rightKillField.getTdField().addEventListener("click", () => {
                                     self.kill(rightMove, false, rightKillField);
                                 });
+                                drawMoveBorder(rightKillField);
                             }
                         }
                     }
@@ -370,6 +368,7 @@
                                 field.getTdField().addEventListener("click", () => {
                                     removeMoves();
                                     addMoves();
+                                    draw();
                                 });
 
                                 field.getFigura().checkMoves();
@@ -384,7 +383,7 @@
             BOARD.forEach(arrays => {
                 arrays.forEach(field => {
                     var identifier = field.getTdField().id;
-                    field.getTdField().replaceWith(field.getTdField().cloneNode(true));
+                    field.getTdField().replaceWith(field.getTdField().cloneNode(false));
                     field.setTdField(d.querySelector("#"+identifier));
                 });
             });
@@ -409,6 +408,19 @@
                     }
                 });
             });
+
+            
+        }
+
+        function drawMoveBorder(field){
+            var image = d.createElement("img");
+            image.src="kolo.png";
+            image.alt="kolo";
+            field.getTdField().appendChild(image);
+        }
+
+        function drawSelectionBorder(){
+            
         }
 
         draw();
