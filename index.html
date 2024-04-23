@@ -173,6 +173,15 @@
                 return this.x > 6;
             }
 
+            isEnemyOnField(field){
+                if(field.getFigura() != null){
+                    if(field.getFigura().red != this.red){
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             checkMoves(){
                 var self = this;
                 var leftMove = this.red ? this.getBottomField(true) : this.getTopField(true);
@@ -184,7 +193,7 @@
                         });
                         drawMoveBorder(leftMove);
                     }
-                    else {
+                    else if(this.isEnemyOnField(leftMove)){
                         var leftKillField = this.red ? leftMove.getFigura().getBottomField(true) : leftMove.getFigura().getTopField(true);
                         if(leftKillField != null){
                             if(leftKillField.getFigura() == null){
@@ -204,7 +213,7 @@
                         });
                         drawMoveBorder(rightMove);
                     }
-                    else {
+                    else if(this.isEnemyOnField(rightMove)){
                         var rightKillField = this.red ? rightMove.getFigura().getBottomField(false) : rightMove.getFigura().getTopField(false);
                         if(rightKillField != null){
                             if(rightKillField.getFigura() == null){
