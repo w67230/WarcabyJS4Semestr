@@ -150,7 +150,6 @@
             x;
             y;
             red;
-            queen = false;
             hasKilledRecently = false;
 
             constructor(y, x, red){
@@ -176,9 +175,6 @@
             }
 
             shouldTransform(){
-                if(this.queen){
-                    return false;
-                }
                 if(this.red){
                     return this.isOnBottomEndOfBoard();
                 }
@@ -259,11 +255,13 @@
                 this.x = left ? this.x-xAddition : this.x+xAddition;
                 this.y = this.red ? this.y+yAddition : this.y-yAddition;
                 field.setFigura(this);
-                if(this.shouldTransform()){
-                    this.queen = true;
-                }
                 removeMoves();
-                if(this.hasKilledRecently){
+                if(this.shouldTransform()){
+                    field.setFigura(new Queen(this));
+                    draw();
+                    addMoves();
+                }
+                else if(this.hasKilledRecently){
                     draw();
                     if(this.checkMoves()){
                         this.getCurrentField().getTdField().addEventListener("click", () => {
@@ -329,6 +327,57 @@
                 return BOARD[this.y][this.x];
             }
 
+        }
+
+        class Queen extends Figure {
+            constructor(figure){
+                super(figure.y, figure.x, figure.red);
+                this.hasKilledRecently = false;
+            }
+
+            checkMoves(){
+                var canMove = false;
+                var self = this;
+                console.log("jestem krolowka");
+
+                // todo
+
+                return canMove;
+            }
+
+            move(left, field, xAddition=1, yAddition=1){
+                this.getCurrentField().setFigura(null);
+                //this.x = left ? this.x-xAddition : this.x+xAddition;
+                //this.y = this.red ? this.y+yAddition : this.y-yAddition;
+                field.setFigura(this);
+                removeMoves();
+                if(this.hasKilledRecently){
+                    draw();
+                    if(this.checkMoves()){
+                        this.getCurrentField().getTdField().addEventListener("click", () => {
+                            removeMoves();
+                            addMoves();
+                            draw();
+                        });
+                    }
+                    else {
+                        removeMoves();
+                        addMoves();
+                        draw();
+                    }
+                    this.hasKilledRecently = false;
+                }
+                else {
+                    addMoves();
+                    draw();
+                }
+            }
+
+            kill(figureToKillField, left, field){
+                figureToKillField.setFigura(null);
+                this.hasKilledRecently = true;
+                this.move(left, field, 2, 2);
+            }
         }
 
 
