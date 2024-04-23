@@ -151,6 +151,7 @@
             y;
             red;
             queen = false;
+            hasKilledRecently = false;
 
             constructor(y, x, red){
                 this.x = x;
@@ -194,15 +195,20 @@
             }
 
             checkMoves(){
+                var canMove = false;
                 var self = this;
                 var leftMove = this.red ? this.getBottomField(true) : this.getTopField(true);
                 var rightMove = this.red ? this.getBottomField(false) : this.getTopField(false);
                 if(leftMove != null){
                     if(leftMove.getFigura() == null){
-                        leftMove.getTdField().addEventListener("click", () => {
-                            self.move(true, leftMove);
-                        });
-                        drawMoveBorder(leftMove);
+                        if(!this.hasKilledRecently){
+                            leftMove.getTdField().addEventListener("click", () => {
+                                self.move(true, leftMove);
+                            });
+                            drawMoveBorder(leftMove);
+
+                            canMove = true;
+                        }
                     }
                     else if(this.isEnemyOnField(leftMove)){
                         var leftKillField = this.red ? leftMove.getFigura().getBottomField(true) : leftMove.getFigura().getTopField(true);
@@ -212,6 +218,8 @@
                                     self.kill(leftMove, true, leftKillField);
                                 });
                                 drawMoveBorder(leftKillField);
+
+                                canMove = true;
                             }
                         }
                     }
@@ -219,10 +227,14 @@
 
                 if(rightMove != null){
                     if(rightMove.getFigura() == null){
-                        rightMove.getTdField().addEventListener("click", () => {
-                            self.move(false, rightMove);
-                        });
-                        drawMoveBorder(rightMove);
+                        if(!this.hasKilledRecently){
+                            rightMove.getTdField().addEventListener("click", () => {
+                                self.move(false, rightMove);
+                            });
+                            drawMoveBorder(rightMove);
+
+                            canMove = true;
+                        }
                     }
                     else if(this.isEnemyOnField(rightMove)){
                         var rightKillField = this.red ? rightMove.getFigura().getBottomField(false) : rightMove.getFigura().getTopField(false);
@@ -232,10 +244,14 @@
                                     self.kill(rightMove, false, rightKillField);
                                 });
                                 drawMoveBorder(rightKillField);
+
+                                canMove = true;
                             }
                         }
                     }
                 }
+
+                return canMove;
             }
 
             move(left, field, xAddition=1, yAddition=1){
@@ -247,12 +263,31 @@
                     this.queen = true;
                 }
                 removeMoves();
-                addMoves();
-                draw();
+                if(this.hasKilledRecently){
+                    draw();
+                    if(this.checkMoves()){
+                        this.getCurrentField().getTdField().addEventListener("click", () => {
+                            removeMoves();
+                            addMoves();
+                            draw();
+                        });
+                    }
+                    else {
+                        removeMoves();
+                        addMoves();
+                        draw();
+                    }
+                    this.hasKilledRecently = false;
+                }
+                else {
+                    addMoves();
+                    draw();
+                }
             }
 
             kill(figureToKillField, left, field){
                 figureToKillField.setFigura(null);
+                this.hasKilledRecently = true;
                 this.move(left, field, 2, 2);
             }
 
