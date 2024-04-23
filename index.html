@@ -150,6 +150,7 @@
             x;
             y;
             red;
+            queen = false;
 
             constructor(y, x, red){
                 this.x = x;
@@ -171,6 +172,16 @@
 
             isOnRightEdge(){
                 return this.x > 6;
+            }
+
+            shouldTransform(){
+                if(this.queen){
+                    return false;
+                }
+                if(this.red){
+                    return this.isOnBottomEndOfBoard();
+                }
+                return this.isOnTopEndOfBoard();
             }
 
             isEnemyOnField(field){
@@ -232,6 +243,9 @@
                 this.x = left ? this.x-xAddition : this.x+xAddition;
                 this.y = this.red ? this.y+yAddition : this.y-yAddition;
                 field.setFigura(this);
+                if(this.shouldTransform()){
+                    this.queen = true;
+                }
                 removeMoves();
                 addMoves();
                 draw();
