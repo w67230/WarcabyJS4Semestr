@@ -1,5 +1,7 @@
 var d = document;
 
+var currentlySelectedField = null;
+
 class Field {
     #tdField;
     #figure;
@@ -176,6 +178,7 @@ class Figure {
         removeMoves();
         if(this.shouldTransform()){
             field.setFigura(new Queen(this));
+            currentlySelectedField = null;
             draw();
             addMoves();
         }
@@ -189,6 +192,7 @@ class Figure {
                 });
             }
             else {
+                currentlySelectedField = null;
                 removeMoves();
                 addMoves();
                 draw();
@@ -196,6 +200,7 @@ class Figure {
             this.hasKilledRecently = false;
         }
         else {
+            currentlySelectedField = null;
             addMoves();
             draw();
         }
@@ -204,7 +209,9 @@ class Figure {
     kill(figureToKillField, left, field, xAddition = 2, yAddition = 2){
         figureToKillField.setFigura(null);
         this.hasKilledRecently = true;
+        currentlySelectedField = field;
         this.move(left, field, xAddition, yAddition);
+        drawSelectionBorder();
     }
 
     getTopField(left){
@@ -384,6 +391,7 @@ class Queen extends Figure {
                 });
             }
             else {
+                currentlySelectedField = null;
                 removeMoves();
                 addMoves();
                 draw();
@@ -392,6 +400,7 @@ class Queen extends Figure {
             this.lastMove = "";
         }
         else {
+            currentlySelectedField = null;
             addMoves();
             draw();
         }
@@ -502,6 +511,8 @@ function addMoves(){
                         });
 
                         field.getFigura().checkMoves();
+                        currentlySelectedField = field;
+                        drawSelectionBorder();
                     });
                 //}
             }
@@ -538,7 +549,6 @@ function draw(){
             }
         });
     });
-
     
 }
 
@@ -550,7 +560,9 @@ function drawMoveBorder(field){
 }
 
 function drawSelectionBorder(){
-    
+    if(currentlySelectedField != null){
+        currentlySelectedField.getTdField().style.backgroundColor="brown";
+    }
 }
 
 draw();
