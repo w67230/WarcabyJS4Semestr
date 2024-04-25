@@ -34,13 +34,13 @@ class Field {
     }
 
     static getFieldByTdField(tdField){
-        for(let i = 0; i < BOARD.length; i++){
-            for(let j = 0; j < BOARD[i].length; j++){
-                if(BOARD[i][j].getTdField() == tdField){
-                    return BOARD[i][j];
+        BOARD.forEach(arrays => {
+            arrays.forEach(field => {
+                if(field == tdField){
+                    return field;
                 }
-            }
-        }
+            });
+        });
         return null;
     }
 
@@ -395,6 +395,10 @@ class Queen extends Figure {
             addMoves();
             draw();
         }
+    }
+
+    shouldTransform(){
+        return false;
     }
 
 }
