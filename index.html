@@ -112,6 +112,11 @@
     <script>
         var d = document;
 
+        const Direction = {
+            TOPLEFT: [-1, -1],
+            BOTTOMRIGHT: [1, 1]
+        };
+
         class Field {
             #tdField;
             #figure;
@@ -302,10 +307,10 @@
                 }
             }
 
-            kill(figureToKillField, left, field){
+            kill(figureToKillField, left, field, xAddition = 2, yAddition = 2){
                 figureToKillField.setFigura(null);
                 this.hasKilledRecently = true;
-                this.move(left, field, 2, 2);
+                this.move(left, field, xAddition, yAddition);
             }
 
             getTopField(left){
@@ -354,47 +359,55 @@
         }
 
         class Queen extends Figure {
+            lastMove;
+
             constructor(figure){
                 super(figure.y, figure.x, figure.red);
                 this.hasKilledRecently = false;
+                this.lastMove = "";
             }
 
-            checkMoves(){
+            checkQueenMoves(left, top){
                 let canMove = false;
                 let self = this;
-                console.log("jestem krolowka");
-                let field = this.getTopField(true);
-                let yTemp = this.y-1;
-                let xTemp = this.x-1;
+
+                let field = top ? this.getTopField(left) : this.getBottomField(left);
+                let yTemp = top ? this.y-1 : this.y+1;
+                let xTemp = left ? this.x-1 : this.x+1;
                                         
-                //left top (- -) (dziala tylko tera jakos to uzyc ponownie w inne strony)
+                
                 while(field != null){
                     let pos = Field.getFieldPosition(field);
                     if(field.getFigura() == null){
                         if(this.hasKilledRecently){
-                            yTemp--;
-                            xTemp--;
+                            yTemp = top ? yTemp-1 : yTemp+1;
+                            xTemp = left ? xTemp-1 : xTemp+1;
                             field = Field.getField(yTemp, xTemp);
                             continue;
                         }
                         field.getTdField().addEventListener("click", () => {
                             if(pos != null){
-                                self.move(true, Field.getField(pos[0], pos[1]), pos[1]-self.x, pos[0]-self.y);
+                                self.move(left, Field.getField(pos[0], pos[1]), pos[1]-self.x, pos[0]-self.y);
                             }
                         });
                         drawMoveBorder(field);
                         canMove = true;
                     }
                     else if(this.isEnemyOnField(field)){
-                        let killField = field.getFigura().getTopField(true);
-                        yTemp--;
-                        xTemp--;
+                        let killField = top ? field.getFigura().getTopField(left) : field.getFigura().getBottomField(left);
+                        yTemp = top ? yTemp-1 : yTemp+1;
+                        xTemp = left ? xTemp-1 : xTemp+1;
                         while(killField != null){
                             let killPos = Field.getFieldPosition(killField);
                             if(killField.getFigura() == null){
                                 killField.getTdField().addEventListener("click", () => {
                                     if(pos != null && killPos != null){
-                                        self.kill(Field.getField(pos[0], pos[1]), true, Field.getField(killPos[0], killPos[1]), killPos[1]-self.x, killPos[0]-self.y);
+                                        self.kill(Field.getField(
+                                            pos[0], pos[1]), 
+                                            left, 
+                                            Field.getField(killPos[0], killPos[1]), killPos[1]-self.x, killPos[0]-self.y
+                                        );
+                                        self.lastMove = "" + top + left;
                                     }
                                 }); 
                                 drawMoveBorder(killField);
@@ -404,8 +417,8 @@
                                 break;
                             }
 
-                            yTemp--;
-                            xTemp--;
+                            yTemp = top ? yTemp-1 : yTemp+1;
+                            xTemp = left ? xTemp-1 : xTemp+1;
                             killField = Field.getField(yTemp, xTemp);
                         }
                         break;
@@ -414,12 +427,35 @@
                         break;
                     }
 
-                    yTemp--;
-                    xTemp--;
+                    yTemp = top ? yTemp-1 : yTemp+1;
+                    xTemp = left ? xTemp-1 : xTemp+1;
                     field = Field.getField(yTemp, xTemp);
                 }
 
-                // todo
+                return canMove;
+            }
+
+            checkMoves(){
+                let canMove = false;
+                let self = this;
+                console.log("jestem krolowka");
+
+                //left top (- -)
+                if(this.checkQueenMoves(true, true)){
+                    canMove = true;
+                }
+                //right top (+ -)
+                if(this.checkQueenMoves(false, true)){
+                    canMove = true;
+                }
+                //left bottom (- +)
+                if(this.checkQueenMoves(true, false)){
+                    canMove = true;
+                }
+                //right bottom (+ +)
+                if(this.checkQueenMoves(false, false)){
+                    canMove = true;
+                }
 
                 return canMove;
             }
@@ -459,11 +495,6 @@
                 }
             }
 
-            kill(figureToKillField, left, field, xAddition, yAddition){
-                figureToKillField.setFigura(null);
-                this.hasKilledRecently = true;
-                this.move(left, field, xAddition, yAddition);
-            }
         }
 
 
