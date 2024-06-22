@@ -1,6 +1,7 @@
 var d = document;
 
 var currentlySelectedField = null;
+var redTurn = false;
 
 class Field {
     #tdField;
@@ -76,6 +77,10 @@ class Figure {
         this.x = x;
         this.y = y;
         this.red = red;
+    }
+
+    isItsTurn(){
+        return (this.red && redTurn) || (!this.red && !redTurn);
     }
 
     isOnTopEndOfBoard(){
@@ -180,28 +185,28 @@ class Figure {
             field.setFigura(new Queen(this));
             currentlySelectedField = null;
             draw();
-            addMoves();
+            addMoves(true);
         }
         else if(this.hasKilledRecently){
             draw();
             if(this.checkMoves()){
                 this.getCurrentField().getTdField().addEventListener("click", () => {
                     removeMoves();
-                    addMoves();
+                    addMoves(true);
                     draw();
                 });
             }
             else {
                 currentlySelectedField = null;
                 removeMoves();
-                addMoves();
+                addMoves(true);
                 draw();
             }
             this.hasKilledRecently = false;
         }
         else {
             currentlySelectedField = null;
-            addMoves();
+            addMoves(true);
             draw();
         }
     }
@@ -386,14 +391,14 @@ class Queen extends Figure {
             if(this.checkMoves()){
                 this.getCurrentField().getTdField().addEventListener("click", () => {
                     removeMoves();
-                    addMoves();
+                    addMoves(true);
                     draw();
                 });
             }
             else {
                 currentlySelectedField = null;
                 removeMoves();
-                addMoves();
+                addMoves(true);
                 draw();
             }
             this.hasKilledRecently = false;
@@ -401,7 +406,7 @@ class Queen extends Figure {
         }
         else {
             currentlySelectedField = null;
-            addMoves();
+            addMoves(true);
             draw();
         }
     }
@@ -497,11 +502,28 @@ const BOARD = [
 ];
 
 
-function addMoves(){
+function switchTurn(){
+    redTurn = !redTurn;
+    if(redTurn){
+        d.querySelector("#tura").innerHTML="Red";
+        d.querySelector("#tura").style.color="red";
+    }
+    else {
+        d.querySelector("#tura").innerHTML="Blue";
+        d.querySelector("#tura").style.color="blue";
+    }
+    
+}
+
+function addMoves(shouldSwitchTurn = false){
+    if(shouldSwitchTurn){
+        switchTurn();
+    }
+
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             if(field.getFigura() != null){
-                //if(!field.getFigura().red){
+                if(field.getFigura().isItsTurn()){
                     field.getTdField().addEventListener("click", () => {
                         removeMoves();
                         field.getTdField().addEventListener("click", () => {
@@ -514,7 +536,7 @@ function addMoves(){
                         currentlySelectedField = field;
                         drawSelectionBorder();
                     });
-                //}
+                }
             }
         });
     });
