@@ -519,7 +519,7 @@ function addMoves(shouldSwitchTurn = false){
     if(shouldSwitchTurn){
         switchTurn();
     }
-
+    let win = true;
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             if(field.getFigura() != null){
@@ -536,10 +536,24 @@ function addMoves(shouldSwitchTurn = false){
                         currentlySelectedField = field;
                         drawSelectionBorder();
                     });
+
+                    win = false;
                 }
             }
         });
     });
+
+    if(win){
+        d.querySelector("#plansza").style.display="none";
+        if(redTurn){
+            d.querySelector("#tura").innerHTML="Zwyciezyl niebieski";
+            d.querySelector("#tura").style.color="blue";
+        }
+        else {
+            d.querySelector("#tura").innerHTML="Zwyciezyl czerwony";
+            d.querySelector("#tura").style.color="red";
+        }
+    }
 }
 
 function removeMoves(){
