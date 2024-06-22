@@ -180,7 +180,7 @@ class Figure {
         this.x = left ? this.x-xAddition : this.x+xAddition;
         this.y = this.red ? this.y+yAddition : this.y-yAddition;
         field.setFigura(this);
-        removeMoves();
+        removeMoves(true);
         if(this.shouldTransform()){
             field.setFigura(new Queen(this));
             currentlySelectedField = null;
@@ -385,7 +385,7 @@ class Queen extends Figure {
         this.x += xAddition;
         this.y += yAddition;
         field.setFigura(this);
-        removeMoves();
+        removeMoves(true);
         if(this.hasKilledRecently){
             draw();
             if(this.checkMoves()){
@@ -501,6 +501,41 @@ const BOARD = [
     ]
 ];
 
+function checkWin(){
+    //console.log("sprawdzam wina...");
+    let isWin = true;
+    BOARD.forEach(arrays => {
+        if(isWin){
+            arrays.forEach(field => {
+                if(isWin){
+                    if(field.getFigura() != null){
+                        if(!field.getFigura().isItsTurn()){
+                            if(field.getFigura().checkMoves()){
+                                isWin = false; // smieszne, nie mozna breakowac forEacha
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+
+    if(isWin){
+        d.querySelector("#plansza").style.display="none";
+        d.querySelector("#tura").style.display="none";
+        if(!redTurn){
+            d.querySelector("#wygrana").innerHTML="Zwyciezyl niebieski";
+            d.querySelector("#wygrana").style.color="blue";
+        }
+        else {
+            d.querySelector("#wygrana").innerHTML="Zwyciezyl czerwony";
+            d.querySelector("#wygrana").style.color="red";
+        }
+    }
+
+
+}
 
 function switchTurn(){
     redTurn = !redTurn;
@@ -519,7 +554,6 @@ function addMoves(shouldSwitchTurn = false){
     if(shouldSwitchTurn){
         switchTurn();
     }
-    let win = true;
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             if(field.getFigura() != null){
@@ -536,27 +570,16 @@ function addMoves(shouldSwitchTurn = false){
                         currentlySelectedField = field;
                         drawSelectionBorder();
                     });
-
-                    win = false;
                 }
             }
         });
     });
-
-    if(win){
-        d.querySelector("#plansza").style.display="none";
-        if(redTurn){
-            d.querySelector("#tura").innerHTML="Zwyciezyl niebieski";
-            d.querySelector("#tura").style.color="blue";
-        }
-        else {
-            d.querySelector("#tura").innerHTML="Zwyciezyl czerwony";
-            d.querySelector("#tura").style.color="red";
-        }
-    }
 }
 
-function removeMoves(){
+function removeMoves(shouldCheckWin = false){
+    if(shouldCheckWin){
+        checkWin();
+    }
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             let identifier = field.getTdField().id;
