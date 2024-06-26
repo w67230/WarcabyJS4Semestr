@@ -2,6 +2,7 @@ var d = document;
 
 var currentlySelectedField = null;
 var redTurn = false;
+var multiMove = false;
 
 class Field {
     #tdField;
@@ -176,6 +177,11 @@ class Figure {
     }
 
     move(left, field, xAddition=1, yAddition=1){
+        if(!multiMove){
+            saveLastMoveToLocalStorage();
+            multiMove = true;
+            disableUndoMoveButton()
+        }
         this.getCurrentField().setFigura(null);
         this.x = left ? this.x-xAddition : this.x+xAddition;
         this.y = this.red ? this.y+yAddition : this.y-yAddition;
@@ -212,6 +218,11 @@ class Figure {
     }
 
     kill(figureToKillField, left, field, xAddition = 2, yAddition = 2){
+        if(!multiMove){
+            saveLastMoveToLocalStorage();
+            multiMove = true;
+            disableUndoMoveButton()
+        }
         figureToKillField.setFigura(null);
         this.hasKilledRecently = true;
         currentlySelectedField = field;
@@ -381,6 +392,11 @@ class Queen extends Figure {
     }
 
     move(left, field, xAddition=1, yAddition=1){
+        if(!multiMove){
+            saveLastMoveToLocalStorage();
+            multiMove = true;
+            disableUndoMoveButton()
+        }
         this.getCurrentField().setFigura(null);
         this.x += xAddition;
         this.y += yAddition;
@@ -539,6 +555,7 @@ function checkWin(){
 
 function switchTurn(){
     redTurn = !redTurn;
+    multiMove = false;
     if(redTurn){
         d.querySelector("#tura").innerHTML="Red";
         d.querySelector("#tura").style.color="red";
@@ -548,6 +565,7 @@ function switchTurn(){
         d.querySelector("#tura").style.color="blue";
     }
     
+    d.querySelector("#cofnij").disabled = false;
 }
 
 function addMoves(shouldSwitchTurn = false){
@@ -608,7 +626,6 @@ function draw(){
             }
         });
     });
-    
 }
 
 function drawMoveBorder(field){
@@ -624,5 +641,73 @@ function drawSelectionBorder(){
     }
 }
 
+/*
+async function saveGameToJson(){
+    const request = new Request("1.json");
+    const response = await fetch(request);
+    const json = await response.json();
+    console.log(json["cos"]);
+    
+}
+    */
+
+function saveLastMoveToLocalStorage(){
+    const figures = [];
+    const queens = [];
+    BOARD.forEach(arrays => {
+        arrays.forEach(field => {
+            if(field.getFigura() != null){
+                if(field.getFigura() instanceof Queen){
+                    queens.push(field.getFigura());
+                }
+                else {
+                    figures.push(field.getFigura());
+                }
+            }
+            
+        });
+    });
+    const figureJson = JSON.stringify(figures);
+    localStorage.setItem("lastMoveFigures", figureJson)
+    const queenJson = JSON.stringify(queens);
+    localStorage.setItem("lastMoveQueens", queenJson)
+}
+
+function loadLastMoveFromLocalStorage(){
+    BOARD.forEach(arrays => {
+        arrays.forEach(field => {
+            field.setFigura(null);
+        });
+    });
+
+    var item = localStorage.getItem("lastMoveFigures");
+    var json = JSON.parse(item);
+    var newObject = null;
+    json.forEach(figure => {
+        newObject = new Figure(figure.y, figure.x, figure.red);
+        newObject.getCurrentField().setFigura(newObject);
+    });
+
+    item = localStorage.getItem("lastMoveQueens");
+    json = JSON.parse(item);
+    json.forEach(figure => {
+        newObject = new Queen(new Figure(figure.y, figure.x, figure.red));
+        newObject.getCurrentField().setFigura(newObject);
+    });
+
+    removeMoves(false);
+    addMoves(true);
+    draw();
+    disableUndoMoveButton()
+}
+
+function disableUndoMoveButton(){
+    d.querySelector("#cofnij").disabled = true;
+}
+
 draw();
 addMoves();
+saveLastMoveToLocalStorage();
+
+d.querySelector("#cofnij").addEventListener("click", loadLastMoveFromLocalStorage);
+disableUndoMoveButton();
