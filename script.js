@@ -3,6 +3,7 @@ var d = document;
 var currentlySelectedField = null;
 var redTurn = false;
 var multiMove = false;
+var isSelectingFigureToRemove = false;
 
 class Field {
     #tdField;
@@ -227,7 +228,7 @@ class Figure {
         this.hasKilledRecently = true;
         currentlySelectedField = field;
         this.move(left, field, xAddition, yAddition);
-        drawSelectionBorder();
+        drawSelectionBackground();
     }
 
     getTopField(left){
@@ -578,6 +579,7 @@ function addMoves(shouldSwitchTurn = false){
                 if(field.getFigura().isItsTurn()){
                     field.getTdField().addEventListener("click", () => {
                         removeMoves();
+                        draw();
                         field.getTdField().addEventListener("click", () => {
                             removeMoves();
                             addMoves();
@@ -586,7 +588,7 @@ function addMoves(shouldSwitchTurn = false){
 
                         field.getFigura().checkMoves();
                         currentlySelectedField = field;
-                        drawSelectionBorder();
+                        drawSelectionBackground();
                     });
                 }
             }
@@ -613,16 +615,11 @@ function draw(){
             if(field.isWhiteField()){
                 field.getTdField().style.backgroundColor="white";
             }
-            else if(field.getFigura() != null){
-                if(field.getFigura().red){
-                    field.getTdField().style.backgroundColor="red";
-                }
-                else {
-                    field.getTdField().style.backgroundColor="blue";
-                }
-            }
             else {
                 field.getTdField().style.backgroundColor="black";
+            }
+            if(field.getFigura() != null){
+                drawFigure(field);
             }
         });
     });
@@ -630,14 +627,23 @@ function draw(){
 
 function drawMoveBorder(field){
     let image = d.createElement("img");
-    image.src="kolo.png";
+    image.src="zaznaczenie_ruchu.png";
     image.alt="kolo";
     field.getTdField().appendChild(image);
 }
 
-function drawSelectionBorder(){
+function drawFigure(field){
+    let image = d.createElement("img");
+    let firstPart = field.getFigura().red ? "red_" : "blue_";
+    let secondPart = field.getFigura() instanceof Queen ? "queen.png" : "figure.png";
+    image.src=firstPart+secondPart;
+    image.alt="figure";
+    field.getTdField().appendChild(image);
+}
+
+function drawSelectionBackground(){
     if(currentlySelectedField != null){
-        currentlySelectedField.getTdField().style.backgroundColor="brown";
+        currentlySelectedField.getTdField().style.backgroundColor="gray";
     }
 }
 
@@ -757,19 +763,30 @@ function disableUndoMoveButton(){
 }
 
 function selectFigureToRemove(){
+    if(isSelectingFigureToRemove){
+        removeMoves(false);
+        addMoves(false);
+        draw();
+        isSelectingFigureToRemove = false;
+        return;
+    }
     removeMoves(false);
+    draw();
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             if(field.getFigura() != null){
                 field.getTdField().addEventListener("click", () => {
+                    isSelectingFigureToRemove = false;
                     field.setFigura(null);
                     removeMoves(true);
                     addMoves(false);
                     draw();
                 });
+                field.getTdField().style.backgroundColor="crimson";
             }
         });
     });
+    isSelectingFigureToRemove = true;
 }
 
 draw();
