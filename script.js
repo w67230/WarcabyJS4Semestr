@@ -641,17 +641,74 @@ function drawSelectionBorder(){
     }
 }
 
-/*
-async function saveGameToJson(){
-    const request = new Request("1.json");
-    const response = await fetch(request);
-    const json = await response.json();
-    console.log(json["cos"]);
-    
-}
-    */
+function loadGame(local = false){
+    BOARD.forEach(arrays => {
+        arrays.forEach(field => {
+            field.setFigura(null);
+        });
+    });
 
-function saveLastMoveToLocalStorage(){
+    if(local){
+        var item = localStorage.getItem("lastMoveFigures");
+        var json = JSON.parse(item);
+        var newObject = null;
+        json.forEach(figure => {
+            newObject = new Figure(figure.y, figure.x, figure.red);
+            newObject.getCurrentField().setFigura(newObject);
+        });
+
+        item = localStorage.getItem("lastMoveQueens");
+        json = JSON.parse(item);
+        json.forEach(figure => {
+            newObject = new Queen(new Figure(figure.y, figure.x, figure.red));
+            newObject.getCurrentField().setFigura(newObject);
+        });
+
+        removeMoves(false);
+        addMoves(true);
+        draw();
+        disableUndoMoveButton();
+    }
+    else {
+        setFiguresFromJsonFile();
+    }
+}
+
+function loadLastMoveFromLocalStorage(){
+    loadGame(true);
+}
+
+function loadGameWithJsonFile(){
+    loadGame(false);
+}
+
+async function setFiguresFromJsonFile(){
+    const file = await d.querySelector("#wczytajGre").files[0].text();
+    const jsonObject = JSON.parse(file);
+    redTurn = !jsonObject["redTurn"];
+    const figures = jsonObject["figures"];
+    console.log(figures);
+    const queens = jsonObject["queens"];
+    console.log(queens);
+    var newObject = null;
+    figures.forEach(figure => {
+        newObject = new Figure(figure.y, figure.x, figure.red);
+        newObject.getCurrentField().setFigura(newObject);
+    });
+
+    queens.forEach(figure => {
+        newObject = new Queen(new Figure(figure.y, figure.x, figure.red));
+        newObject.getCurrentField().setFigura(newObject);
+    });
+
+    removeMoves(false);
+    addMoves(true);
+    draw();
+
+    d.querySelector("#wczytajGre").value='';
+}
+
+function saveGame(local = false){
     const figures = [];
     const queens = [];
     BOARD.forEach(arrays => {
@@ -668,37 +725,27 @@ function saveLastMoveToLocalStorage(){
         });
     });
     const figureJson = JSON.stringify(figures);
-    localStorage.setItem("lastMoveFigures", figureJson)
     const queenJson = JSON.stringify(queens);
-    localStorage.setItem("lastMoveQueens", queenJson)
+    if(local){
+        localStorage.setItem("lastMoveFigures", figureJson);
+        localStorage.setItem("lastMoveQueens", queenJson);
+    }
+    else {
+        var obiekcik = JSON.stringify({"figures":figures, "queens":queens, "redTurn":redTurn});
+        var file = new Blob([obiekcik], {type: "text/plain"});
+        var a = d.createElement("a");
+        a.href = URL.createObjectURL(file);
+        a.download = "warcaby_zapis.json";
+        a.click();
+    }
 }
 
-function loadLastMoveFromLocalStorage(){
-    BOARD.forEach(arrays => {
-        arrays.forEach(field => {
-            field.setFigura(null);
-        });
-    });
+function saveLastMoveToLocalStorage(){
+    saveGame(true);
+}
 
-    var item = localStorage.getItem("lastMoveFigures");
-    var json = JSON.parse(item);
-    var newObject = null;
-    json.forEach(figure => {
-        newObject = new Figure(figure.y, figure.x, figure.red);
-        newObject.getCurrentField().setFigura(newObject);
-    });
-
-    item = localStorage.getItem("lastMoveQueens");
-    json = JSON.parse(item);
-    json.forEach(figure => {
-        newObject = new Queen(new Figure(figure.y, figure.x, figure.red));
-        newObject.getCurrentField().setFigura(newObject);
-    });
-
-    removeMoves(false);
-    addMoves(true);
-    draw();
-    disableUndoMoveButton()
+function saveGameToJsonFile(){
+    saveGame(false);
 }
 
 function disableUndoMoveButton(){
@@ -710,4 +757,6 @@ addMoves();
 saveLastMoveToLocalStorage();
 
 d.querySelector("#cofnij").addEventListener("click", loadLastMoveFromLocalStorage);
+d.querySelector("#saveGame").addEventListener("click", saveGameToJsonFile);
+d.querySelector("#wczytajGre").addEventListener("change", loadGameWithJsonFile);
 disableUndoMoveButton();
