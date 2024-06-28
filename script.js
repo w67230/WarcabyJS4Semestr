@@ -683,13 +683,16 @@ function loadGameWithJsonFile(){
 }
 
 async function setFiguresFromJsonFile(){
+    if(d.querySelector("#wczytajGre").files[0].type != "application/json"){
+        alert("Save file has to be a JSON file! Loading last move...");
+        loadGame(true);
+        return;
+    }
     const file = await d.querySelector("#wczytajGre").files[0].text();
     const jsonObject = JSON.parse(file);
     redTurn = !jsonObject["redTurn"];
     const figures = jsonObject["figures"];
-    console.log(figures);
     const queens = jsonObject["queens"];
-    console.log(queens);
     var newObject = null;
     figures.forEach(figure => {
         newObject = new Figure(figure.y, figure.x, figure.red);
@@ -706,6 +709,7 @@ async function setFiguresFromJsonFile(){
     draw();
 
     d.querySelector("#wczytajGre").value='';
+    disableUndoMoveButton();
 }
 
 function saveGame(local = false){
@@ -752,6 +756,22 @@ function disableUndoMoveButton(){
     d.querySelector("#cofnij").disabled = true;
 }
 
+function selectFigureToRemove(){
+    removeMoves(false);
+    BOARD.forEach(arrays => {
+        arrays.forEach(field => {
+            if(field.getFigura() != null){
+                field.getTdField().addEventListener("click", () => {
+                    field.setFigura(null);
+                    removeMoves(true);
+                    addMoves(false);
+                    draw();
+                });
+            }
+        });
+    });
+}
+
 draw();
 addMoves();
 saveLastMoveToLocalStorage();
@@ -759,4 +779,5 @@ saveLastMoveToLocalStorage();
 d.querySelector("#cofnij").addEventListener("click", loadLastMoveFromLocalStorage);
 d.querySelector("#saveGame").addEventListener("click", saveGameToJsonFile);
 d.querySelector("#wczytajGre").addEventListener("change", loadGameWithJsonFile);
+d.querySelector("#obowiazekBicia").addEventListener("click", selectFigureToRemove);
 disableUndoMoveButton();
