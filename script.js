@@ -35,13 +35,19 @@ function setSelectedMode(){
             element.style.color=kolorNapisow;
             element.style.backgroundColor="gray";
         });
+        d.querySelectorAll(".menuA").forEach(element => {
+            element.style.color="aliceblue";
+        });
+        d.querySelectorAll(".boczny").forEach(element => {
+            element.style.backgroundImage="linear-gradient(rgb(40, 40, 40), rgb(17, 17, 17))";
+        });
     }
     else {
         d.querySelector("body").classList.replace("darkModeOn", "lightModeOn");
         kolorBialychPol = "white";
         kolorCzarnychPol = "black";
         kolorNapisow = "black";
-        d.querySelector("#gigaNapis").style.color="black";
+        
     }
 }
 
@@ -593,7 +599,12 @@ function checkWin(){
         d.querySelector("#tura").style.display="none";
         if(!redTurn){
             d.querySelector("#wygrana").innerHTML="Zwyciężył " + niebieski;
-            d.querySelector("#wygrana").style.color="blue";
+            if(darkMode){
+                d.querySelector("#wygrana").style.color="lightblue";
+            }
+            else {
+                d.querySelector("#wygrana").style.color="blue";
+            }
         }
         else {
             d.querySelector("#wygrana").innerHTML="Zwyciężył " + czerwony;
@@ -611,6 +622,7 @@ function switchTurn(){
     updateTurnInfo();
     
     d.querySelector("#cofnij").disabled = false;
+    d.querySelector("#cofnij").style.textDecoration="none";
 }
 
 function updateTurnInfo(){
@@ -620,7 +632,12 @@ function updateTurnInfo(){
     }
     else {
         d.querySelector("#tura").innerHTML=niebieski;
-        d.querySelector("#tura").style.color="blue";
+        if(darkMode){
+            d.querySelector("#tura").style.color="lightblue";
+        }
+        else {
+            d.querySelector("#tura").style.color="blue";
+        }
     }
 }
 
@@ -746,7 +763,12 @@ function loadLastMoveFromLocalStorage(){
 }
 
 function loadGameWithJsonFile(){
-    loadGame(false);
+    if(confirm("Jesteś pewny, że chcesz wczytać partię? Nie będzie można wrócić do obecnej partii, chyba że została zapisana.")){
+        loadGame(false);
+    }
+    else {
+        d.querySelector("#wczytajGre").value='';
+    }
 }
 
 async function setFiguresFromJsonFile(){
@@ -822,6 +844,7 @@ function saveGameToJsonFile(){
 
 function disableUndoMoveButton(){
     d.querySelector("#cofnij").disabled = true;
+    d.querySelector("#cofnij").style.textDecoration="line-through";
 }
 
 function selectFigureToRemove(){

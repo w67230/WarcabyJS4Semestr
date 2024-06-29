@@ -8,7 +8,7 @@
 }
 
 .darkModeOn{
-    background-image: linear-gradient(rgb(26, 26, 26), rgb(8, 8, 8));
+    background-image: linear-gradient(rgb(35, 35, 35), rgb(12, 12, 12));
     color:white;
 }
 
@@ -38,9 +38,13 @@ header{
     justify-content: space-around;
     width:40%;
 }
-#menu a{
+.menuA{
     text-decoration: none;
     padding-top:2%;
+    color:rgb(46, 42, 42);
+}
+.menuA:hover{
+    text-decoration: underline;
 }
 #darkMode{
     box-sizing: border-box;
@@ -63,6 +67,12 @@ main{
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    background-image: linear-gradient(rgb(255, 255, 255), rgb(243, 243, 243));
+    border-radius: 6%;
+    border:solid 3px gray;
+    height:99%;
+    margin-top:8%;
+    padding:3%;
 }
 .srodek{
     display:flex;
@@ -95,13 +105,17 @@ img{
 }
 
 button{
-    margin-top:1%;
-    margin-bottom: 1%;
+    margin-top:2%;
+    margin-bottom: 2%;
+    padding-top:2%;
+    padding-bottom:2%;
 }
 
 #tura {
     color:blue;
     font-size: 200%;
+    padding-top:3%;
+    padding-bottom:3%;
 }
 
 #wygrana{
@@ -146,6 +160,30 @@ button{
     }
     .srodek{
         width:100%;
+    }
+    #infoTura{
+        font-size: 120%;
+    }
+    #tura {
+        font-size: 120%;
+    }
+    .boczny{
+        margin:0;
+        padding:0;
+        margin-bottom: 2%;
+        width:45%;
+        margin-left:auto;
+        margin-right:auto;
+    }
+    .boczny button{
+        width:80%;
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    table{
+        margin-top:0;
+        margin-bottom:3%;
     }
 
     td{
