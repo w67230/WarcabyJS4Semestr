@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="noMargin darkModeOn">
+    <header class="noMargin">
+        <div>
+            <a href="index.html" id="logo"><span id="gigaNapis" class="noMargin"><img src="red_queen.png" alt="queen" style="width:50px;height: 50px;">Warcaby</span></a>
+        </div>
+        <div id="menu">
+            <a href="index.html" class="menuA"><h2>Rozgrywka</h2></a>
+            <a href="zasady.html" class="menuA"><h2>Zasady</h2></a>
+            <a href="" class="menuA"><h2>O warcabach</h2></a>
+        </div>
+        <div id="darkMode">
+            <p>
+                <label for="guzikDarkModa">Dark Mode</label>
+            </p>  
+            <label class="switch">
+                <input type="checkbox" id="checkDark">
+                <span class="slider round" id="guzikDarkModa"></span>
+            </label>
+            
+
+        </div>
+    </header>
+    <hr>
+    <main class="noMargin">
+        <div class="boczny" style="opacity: 0;">
+
+        </div>
+        <div id="artykul">
+            <h2>Wstęp</h2>
+            <p>
+                Warcaby posiadają wiele odmian. Główne różnice pomiędzy odmianami dotyczą:
+                <ul>
+                    <li>rozmiarów planszy</li>
+                    <li>liczby pionków</li>
+                    <li>zasad bicia</li>
+                    <li>sposobu poruszania się królówki (damki)</li>
+                </ul>
+                Jeśli znasz zasady warcab, poniżej znajdują się najważniejsze informacje na temat odmiany zaimplementowanej na tej stronie:
+                <ul>
+                    <li>Bicie zwykłym pionkiem do tyłu: nie</li>
+                    <li>Poruszanie królówki: o wiele pól</li>
+                    <li>Królówka może być zbita przez zwykłego pionka: tak</li>
+                    <li>Obowiązek bicia: wedle uznania gracza (zalecany obowiązek wykonania najlepszego bicia)</li>
+                </ul>
+            </p>
+            <h2>Rozgrywka</h2>
+            <p>
+                Aby wykonać ruch, kliknij w jedną z figur: spowoduje to wyświetlenie możliwych ruchów (szare koła).
+                Kliknięcie w jedno z zaznaczonych pól spowoduje przesunięcie figury, a ponowne kliknięcie na wybraną figurę spowoduje anulowanie ruchu i umożliwi wybranie innej figury.
+            </p>
+            <p>
+                Po prawej stronie od planszy znajdują się przyciski umożliwiające:
+                <ul>
+                    <li>Cofnięcie ostatnio wykonanego ruchu</li>
+                    <li>Usunięcie dowolnej figury (dla osób grających według zasady "za nie bicie tracisz życie")</li>
+                    <li>Zapisanie obecnego stanu partii (spowoduje pobranie pliku z zapisem)</li>
+                    <li>Rozpoczęcie nowej partii</li>
+                    <li>Wczytanie partii z pliku zapisu (otrzymywanego po zapisaniu partii)</li>
+                </ul>
+            </p>
+            <h2>Zasady</h2>
+            <p>
+                Celem gry jest zbicie wszystkich figur przeciwnika albo zablokowanie wszystkich, które pozostają na planszy, 
+                pozbawiając przeciwnika możliwości wykonania ruchu. Jeśli żaden z graczy nie jest w stanie tego osiągnąć, następuje remis.
+            </p>
+            <p>
+                Każdy gracz rozpoczyna grę z ośmioma pionkami (jeden koloru niebieskiego, drugi czerwonego) ustawionymi 
+                na ciemniejszych polach planszy, po których się poruszają.
+            </p>
+            <p>
+                Jako pierwszy ruch wykonuje grający pionami niebieskimi, po czym gracze wykonują na zmianę kolejne ruchy.
+            </p>
+            <p>
+                Pionki mogą poruszać się o jedno pole do przodu po przekątnej na wolne pola.
+            </p>
+            <p>
+                Bicie pionkiem następuje przez przeskoczenie sąsiedniej figury przeciwnika na pole znajdujące się tuż za nim po przekątnej (pole to musi być wolne). 
+                Zbite figury są usuwane z planszy.
+            </p>
+            <p>
+                Pionki mogą bić tylko do przodu.
+            </p>
+            <p>
+                W jednym ruchu wolno wykonać wielokrotne bicie tym samym pionkiem, przeskakując przez kolejne figury przeciwnika.
+            </p>
+            <p>
+                Bicia są obowiązkowe, jednak obowiązek bicia jest realizowany przez użytkownika: 
+                program nie powstrzyma gracza przed niewykonaniem bicia ani nie ukara gracza za niewykonanie bicia.
+            </p>
+            <p>
+                Pionek, który dojdzie do ostatniego rzędu planszy, staje się królówką.
+                Królówki mogą poruszać się w jednym ruchu o dowolną liczbę pól do przodu lub do tyłu po przekątnej, zatrzymując się na wolnych polach.
+            </p>
+            <p>
+                Bicie królówką jest możliwe z dowolnej odległości po linii przekątnej i następuje przez przeskoczenie figury przeciwnika, 
+                za którym musi znajdować się co najmniej jedno wolne pole - królówka przeskakuje na dowolne z tych pól i może kontynuować bicie na tej 
+                samej lub prostopadłej linii.
+            </p>
+        </div>
+
+        <div class="boczny" style="opacity: 0;">
+
+        </div>
+    </main>
+    <footer class="noMargin">
+
+    </footer>
+
+    <script src="darkScript.js"></script>
+</body>
+</html>
