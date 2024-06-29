@@ -773,8 +773,8 @@ function loadGameWithJsonFile(){
 
 async function setFiguresFromJsonFile(){
     if(d.querySelector("#wczytajGre").files[0].type != "application/json"){
-        alert("Save file has to be a JSON file! Loading last move...");
-        loadGame(true);
+        alert("Plik zapisu musi być plikiem JSON!");
+        location.reload();
         return;
     }
     const file = await d.querySelector("#wczytajGre").files[0].text();
