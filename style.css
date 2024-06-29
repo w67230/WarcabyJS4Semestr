@@ -123,6 +123,12 @@ button{
     font-size: 200%;
 }
 
+  /*do zasady.html*/
+
+  #artykul{
+    width:40%;
+}
+
 @media screen and (max-width:1600px){
     #darkMode{
         width:36%;
@@ -133,6 +139,13 @@ button{
 @media screen and (max-width:1400px){
     #darkMode{
         width:28%;
+        
+    }
+}
+
+@media screen and (max-width:1100px){
+    #darkMode{
+        width:22%;
         
     }
 }
@@ -201,6 +214,15 @@ button{
         padding:0;
         padding-top:2px;
     }
+
+      /*do zasady.html*/
+
+    #artykul{
+        box-sizing: border-box;
+        width:90%;
+        margin-left: 2%;
+        margin-right: 2%;
+    }   
 }
 
 
@@ -269,11 +291,4 @@ button{
   .slider.round:before {
     border-radius: 50%;
   }
-
-
-  /*do zasady.html*/
-
-#artykul{
-    width:40%;
-}
 
