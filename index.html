@@ -6,124 +6,174 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
+<body class="noMargin darkModeOn">
+    <header class="noMargin">
+        <div>
+            <a href="index.html" id="logo"><span id="gigaNapis" class="noMargin"><img src="red_queen.png" alt="queen" style="width:50px;height: 50px;">Warcaby</span></a>
+        </div>
+        <div id="menu">
+            <a href="index.html"><h2>Rozgrywka</h2></a>
+            <a href=""><h2>Zasady</h2></a>
+            <a href=""><h2>O warcabach</h2></a>
+        </div>
+        <div id="darkMode">
+            <p>
+                <label for="guzikDarkModa">Dark Mode</label>
+            </p>  
+            <label class="switch">
+                <input type="checkbox" id="checkDark">
+                <span class="slider round" id="guzikDarkModa"></span>
+            </label>
+            
 
+        </div>
     </header>
-    <main>
+    <hr>
+    <main class="noMargin">
+        <div class="boczny noMargin" id="pokazujeTure">
+            <h1 id="infoTura" class="noMargin">Teraz tura gracza:</h1>
+            <p id="tura">Niebieski</p>
+            <h1 id="wygrana"></h1>
+        </div>
+        <div class="srodek">
+            <table id="plansza">
+                <tr>
+                    <th>-</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th>-</th>
+                </tr>
+                <tr>
+                    <th>8</th>
+                    <td id="f00"></td>
+                    <td id="f01"></td>
+                    <td id="f02"></td>
+                    <td id="f03"></td>
+                    <td id="f04"></td>
+                    <td id="f05"></td>
+                    <td id="f06"></td>
+                    <td id="f07"></td>
+                    <th>8</th>
+                </tr>
+                <tr>
+                    <th>7</th>
+                    <td id="f10"></td>
+                    <td id="f11"></td>
+                    <td id="f12"></td>
+                    <td id="f13"></td>
+                    <td id="f14"></td>
+                    <td id="f15"></td>
+                    <td id="f16"></td>
+                    <td id="f17"></td>
+                    <th>7</th>
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td id="f20"></td>
+                    <td id="f21"></td>
+                    <td id="f22"></td>
+                    <td id="f23"></td>
+                    <td id="f24"></td>
+                    <td id="f25"></td>
+                    <td id="f26"></td>
+                    <td id="f27"></td>
+                    <th>6</th>
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td id="f30"></td>
+                    <td id="f31"></td>
+                    <td id="f32"></td>
+                    <td id="f33"></td>
+                    <td id="f34"></td>
+                    <td id="f35"></td>
+                    <td id="f36"></td>
+                    <td id="f37"></td>
+                    <th>5</th>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td id="f40"></td>
+                    <td id="f41"></td>
+                    <td id="f42"></td>
+                    <td id="f43"></td>
+                    <td id="f44"></td>
+                    <td id="f45"></td>
+                    <td id="f46"></td>
+                    <td id="f47"></td>
+                    <th>4</th>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td id="f50"></td>
+                    <td id="f51"></td>
+                    <td id="f52"></td>
+                    <td id="f53"></td>
+                    <td id="f54"></td>
+                    <td id="f55"></td>
+                    <td id="f56"></td>
+                    <td id="f57"></td>
+                    <th>3</th>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td id="f60"></td>
+                    <td id="f61"></td>
+                    <td id="f62"></td>
+                    <td id="f63"></td>
+                    <td id="f64"></td>
+                    <td id="f65"></td>
+                    <td id="f66"></td>
+                    <td id="f67"></td>
+                    <th>2</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td id="f70"></td>
+                    <td id="f71"></td>
+                    <td id="f72"></td>
+                    <td id="f73"></td>
+                    <td id="f74"></td>
+                    <td id="f75"></td>
+                    <td id="f76"></td>
+                    <td id="f77"></td>
+                    <th>1</th>
+                </tr>
+                <tr>
+                    <th>-</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th>-</th>
+                </tr>
+            </table>
+        </div>
 
-        <table id="plansza">
-            <tr>
-                <th>0</th>
-                <td id="f00"></td>
-                <td id="f01"></td>
-                <td id="f02"></td>
-                <td id="f03"></td>
-                <td id="f04"></td>
-                <td id="f05"></td>
-                <td id="f06"></td>
-                <td id="f07"></td>
-            </tr>
-            <tr>
-                <th>1</th>
-                <td id="f10"></td>
-                <td id="f11"></td>
-                <td id="f12"></td>
-                <td id="f13"></td>
-                <td id="f14"></td>
-                <td id="f15"></td>
-                <td id="f16"></td>
-                <td id="f17"></td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td id="f20"></td>
-                <td id="f21"></td>
-                <td id="f22"></td>
-                <td id="f23"></td>
-                <td id="f24"></td>
-                <td id="f25"></td>
-                <td id="f26"></td>
-                <td id="f27"></td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td id="f30"></td>
-                <td id="f31"></td>
-                <td id="f32"></td>
-                <td id="f33"></td>
-                <td id="f34"></td>
-                <td id="f35"></td>
-                <td id="f36"></td>
-                <td id="f37"></td>
-            </tr>
-            <tr>
-                <th>4</th>
-                <td id="f40"></td>
-                <td id="f41"></td>
-                <td id="f42"></td>
-                <td id="f43"></td>
-                <td id="f44"></td>
-                <td id="f45"></td>
-                <td id="f46"></td>
-                <td id="f47"></td>
-            </tr>
-            <tr>
-                <th>5</th>
-                <td id="f50"></td>
-                <td id="f51"></td>
-                <td id="f52"></td>
-                <td id="f53"></td>
-                <td id="f54"></td>
-                <td id="f55"></td>
-                <td id="f56"></td>
-                <td id="f57"></td>
-            </tr>
-            <tr>
-                <th>6</th>
-                <td id="f60"></td>
-                <td id="f61"></td>
-                <td id="f62"></td>
-                <td id="f63"></td>
-                <td id="f64"></td>
-                <td id="f65"></td>
-                <td id="f66"></td>
-                <td id="f67"></td>
-            </tr>
-            <tr>
-                <th>7</th>
-                <td id="f70"></td>
-                <td id="f71"></td>
-                <td id="f72"></td>
-                <td id="f73"></td>
-                <td id="f74"></td>
-                <td id="f75"></td>
-                <td id="f76"></td>
-                <td id="f77"></td>
-            </tr>
-            <tr>
-                <th>-</th>
-                <th>0</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-            </tr>
-        </table>
+        <div class="boczny noMargin">
+            <button id="cofnij" class="buttonDarkMode">Cofnij</button>
+            <button id="obowiazekBicia" class="buttonDarkMode">Wybierz figurę do usunięcia</button>
+            <button id="saveGame" class="buttonDarkMode">Zapisz Partię</button>
 
-        <p id="tura">Blue</p>
-        <h1 id="wygrana"></h1>
+            <hr style="width:75%;">
+            <button id="nowaGra" class="buttonDarkMode">Rozpocznij nową partię</button>
+            <button class="buttonDarkMode"><label for="wczytajGre">Wczytaj partię</label></button>
+            <input type="file" id="wczytajGre" accept=".json" hidden="true">
+            
+        </div>
 
-        <button id="cofnij">Cofnij</button>
-        <button id="saveGame">Zapisz Gre</button>
-        <button id="obowiazekBicia">Wybierz figure do usunieca</button>
-
-        <input type="file" id="wczytajGre" accept=".json">
     </main>
-    <footer>
+    <footer class="noMargin">
 
     </footer>
 

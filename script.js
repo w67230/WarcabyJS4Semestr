@@ -1,9 +1,60 @@
 var d = document;
 
+//dla wygladu
+const czerwony = "Czerwony";
+const niebieski = "Niebieski";
+
+if(localStorage.getItem("darkMode") == null){
+    localStorage.setItem("darkMode", "true");
+    d.querySelector("#checkDark").checked=true;
+}
+else {
+    d.querySelector("#checkDark").checked=localStorage.getItem("darkMode") == "true";
+}
+var darkMode = localStorage.getItem("darkMode") == "true";
+
+var kolorNapisow = darkMode ? "white" : "black";
+var kolorBialychPol = darkMode ? "antiquewhite" : "white";
+var kolorCzarnychPol = darkMode ? "chocolate" : "black";
+
+function switchDarkMode(){
+    darkMode = !darkMode;
+    localStorage.setItem("darkMode", darkMode.toString());
+    setSelectedMode();
+    location.reload();
+}
+
+function setSelectedMode(){
+    if(darkMode){
+        d.querySelector("body").classList.replace("lightModeOn", "darkModeOn");
+        kolorBialychPol = "antiquewhite";
+        kolorCzarnychPol = "chocolate";
+        kolorNapisow = "white";
+        d.querySelector("#gigaNapis").style.color="white";
+        d.querySelectorAll(".buttonDarkMode").forEach(element => {
+            element.style.color=kolorNapisow;
+            element.style.backgroundColor="gray";
+        });
+    }
+    else {
+        d.querySelector("body").classList.replace("darkModeOn", "lightModeOn");
+        kolorBialychPol = "white";
+        kolorCzarnychPol = "black";
+        kolorNapisow = "black";
+        d.querySelector("#gigaNapis").style.color="black";
+    }
+}
+
+d.querySelector("#guzikDarkModa").addEventListener("click", switchDarkMode);
+setSelectedMode();
+
+// dla gry
 var currentlySelectedField = null;
 var redTurn = false;
 var multiMove = false;
 var isSelectingFigureToRemove = false;
+var someoneWon = false;
+var startsNewGame = false;
 
 class Field {
     #tdField;
@@ -519,7 +570,6 @@ const BOARD = [
 ];
 
 function checkWin(){
-    //console.log("sprawdzam wina...");
     let isWin = true;
     BOARD.forEach(arrays => {
         if(isWin){
@@ -539,16 +589,17 @@ function checkWin(){
 
 
     if(isWin){
-        d.querySelector("#plansza").style.display="none";
+        d.querySelector("#infoTura").style.display="none";
         d.querySelector("#tura").style.display="none";
         if(!redTurn){
-            d.querySelector("#wygrana").innerHTML="Zwyciezyl niebieski";
+            d.querySelector("#wygrana").innerHTML="Zwyciężył " + niebieski;
             d.querySelector("#wygrana").style.color="blue";
         }
         else {
-            d.querySelector("#wygrana").innerHTML="Zwyciezyl czerwony";
+            d.querySelector("#wygrana").innerHTML="Zwyciężył " + czerwony;
             d.querySelector("#wygrana").style.color="red";
         }
+        someoneWon = true;
     }
 
 
@@ -557,19 +608,26 @@ function checkWin(){
 function switchTurn(){
     redTurn = !redTurn;
     multiMove = false;
-    if(redTurn){
-        d.querySelector("#tura").innerHTML="Red";
-        d.querySelector("#tura").style.color="red";
-    }
-    else {
-        d.querySelector("#tura").innerHTML="Blue";
-        d.querySelector("#tura").style.color="blue";
-    }
+    updateTurnInfo();
     
     d.querySelector("#cofnij").disabled = false;
 }
 
+function updateTurnInfo(){
+    if(redTurn){
+        d.querySelector("#tura").innerHTML=czerwony;
+        d.querySelector("#tura").style.color="red";
+    }
+    else {
+        d.querySelector("#tura").innerHTML=niebieski;
+        d.querySelector("#tura").style.color="blue";
+    }
+}
+
 function addMoves(shouldSwitchTurn = false){
+    if(someoneWon){
+        return;
+    }
     if(shouldSwitchTurn){
         switchTurn();
     }
@@ -613,10 +671,10 @@ function draw(){
     BOARD.forEach(arrays => {
         arrays.forEach(field => {
             if(field.isWhiteField()){
-                field.getTdField().style.backgroundColor="white";
+                field.getTdField().style.backgroundColor=kolorBialychPol;
             }
             else {
-                field.getTdField().style.backgroundColor="black";
+                field.getTdField().style.backgroundColor=kolorCzarnychPol;
             }
             if(field.getFigura() != null){
                 drawFigure(field);
@@ -669,9 +727,12 @@ function loadGame(local = false){
             newObject = new Queen(new Figure(figure.y, figure.x, figure.red));
             newObject.getCurrentField().setFigura(newObject);
         });
+        redTurn = localStorage.getItem("redTurn") == "true";
+        updateTurnInfo();
+        
 
         removeMoves(false);
-        addMoves(true);
+        addMoves(false);
         draw();
         disableUndoMoveButton();
     }
@@ -739,6 +800,7 @@ function saveGame(local = false){
     if(local){
         localStorage.setItem("lastMoveFigures", figureJson);
         localStorage.setItem("lastMoveQueens", queenJson);
+        localStorage.setItem("redTurn", redTurn.toString());
     }
     else {
         var obiekcik = JSON.stringify({"figures":figures, "queens":queens, "redTurn":redTurn});
@@ -789,12 +851,42 @@ function selectFigureToRemove(){
     isSelectingFigureToRemove = true;
 }
 
-draw();
-addMoves();
-saveLastMoveToLocalStorage();
+function startNewGame(){
+    if(confirm("Jesteś pewny, że chcesz rozpocząć nową partię? Nie będzie można wrócić do obecnej partii, chyba że została zapisana.")){
+        clearLocalStorage();
+        const a = d.createElement("a");
+        a.href="index.html";
+        a.click();
+    }
+}
+
+function clearLocalStorage(){
+    startsNewGame = true;
+    localStorage.clear();
+}
+
+if(localStorage.getItem("lastMoveFigures") == null){
+    draw();
+    addMoves();
+    saveLastMoveToLocalStorage();
+    disableUndoMoveButton();
+}
+else {
+    loadLastMoveFromLocalStorage();
+}
+
 
 d.querySelector("#cofnij").addEventListener("click", loadLastMoveFromLocalStorage);
 d.querySelector("#saveGame").addEventListener("click", saveGameToJsonFile);
 d.querySelector("#wczytajGre").addEventListener("change", loadGameWithJsonFile);
 d.querySelector("#obowiazekBicia").addEventListener("click", selectFigureToRemove);
-disableUndoMoveButton();
+d.querySelector("#nowaGra").addEventListener("click", startNewGame);
+
+window.addEventListener("beforeunload", () => {
+    if(someoneWon){
+        clearLocalStorage();
+    }
+    else if(!startsNewGame){
+        saveGame(true);
+    }
+});
